@@ -1,0 +1,129 @@
+import java.util.LinkedList;
+import java.util.Random;
+
+class CovidVaccine {
+    String SID;
+    String firstName;
+    String lastName;
+    LinkedList<String> previousVaccines;
+
+    public CovidVaccine(String SID, String firstName, String lastName, LinkedList<String> previousVaccines) {
+        this.SID = SID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.previousVaccines = previousVaccines;
+    }
+
+    @Override
+    public String toString() {
+        return "SID: " + SID + ", Name: " + firstName + " " + lastName + ", Vaccines: " + previousVaccines;
+    }
+}
+
+class Node {
+    CovidVaccine data;
+    Node next;
+
+    public Node(CovidVaccine data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class LinkedListCovid {
+    private Node head;
+    private int size;
+
+    public LinkedListCovid() {
+        head = null;
+        size = 0;
+    }
+
+    public void insert(CovidVaccine vaccine) {
+        Node newNode = new Node(vaccine);
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        size++;
+    }
+
+    public void delete(String SID) {
+        if (head == null) return;
+        
+        if (head.data.SID.equals(SID)) {
+            head = head.next;
+            size--;
+            return;
+        }
+        
+        Node current = head;
+        while (current.next != null && !current.next.data.SID.equals(SID)) {
+            current = current.next;
+        }
+        
+        if (current.next != null) {
+            current.next = current.next.next;
+            size--;
+        }
+    }
+
+    public void deleteAll() {
+        head = null;
+        size = 0;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public void traverse() {
+        Node current = head;
+        while (current != null) {
+            System.out.println(current.data);
+            current = current.next;
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        LinkedListCovid list = new LinkedListCovid();
+        
+        String[] firstNames = {"John", "Jane", "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Helen"};
+        String[] lastNames = {"Doe", "Smith", "Johnson", "Brown", "Williams", "Jones", "Garcia", "Miller", "Davis", "Rodriguez"};
+        Random random = new Random();
+
+        // Adding 10 applicants
+        for (int i = 0; i < 10; i++) {
+            LinkedList<String> vaccines = new LinkedList<>();
+            vaccines.add("Vaccine " + (random.nextInt(3) + 1));
+            list.insert(new CovidVaccine("SID" + (i + 1), firstNames[i], lastNames[i], vaccines));
+        }
+
+        System.out.println("\nInitial List:");
+        list.traverse();
+
+        // Randomly delete two applicants
+        list.delete("SID" + (random.nextInt(10) + 1));
+        list.delete("SID" + (random.nextInt(10) + 1));
+
+        System.out.println("\nList after deleting two applicants:");
+        list.traverse();
+
+        // Delete all applicants
+        list.deleteAll();
+        
+        System.out.println("\nList after deleting all applicants:");
+        list.traverse();
+    }
+}
